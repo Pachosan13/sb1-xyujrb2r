@@ -3,11 +3,14 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { CurrencyProvider } from './contexts/CurrencyContext';
 import { AppRoutes } from './routes';
-import { verifyIndexes } from './services/firebase/indexes';
+import { supabase } from './lib/supabase';
 
 export default function App() {
   useEffect(() => {
-    verifyIndexes().catch(console.error);
+    const session = supabase.auth.getSession();
+    session.then((session) => {
+      console.log('User session:', session);
+    });
   }, []);
 
   return (

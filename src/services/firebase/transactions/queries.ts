@@ -1,5 +1,4 @@
-import { collection, query, where, orderBy, limit, QueryConstraint } from 'firebase/firestore';
-import { db } from '../config';
+import { supabase } from '../../../lib/supabase'; // Import Supabase client
 
 export function createTransactionQuery(userId: string, options?: { 
   month?: string;
@@ -7,29 +6,27 @@ export function createTransactionQuery(userId: string, options?: {
   limit?: number;
   orderDirection?: 'asc' | 'desc';
 }) {
-  const constraints: QueryConstraint[] = [
-    where('userId', '==', userId)
-  ];
+  let query = supabase
+    .from('transactions')
+    .select('*')
+    .eq('user_id', userId);
 
   if (options?.month) {
     const startDate = `${options.month}-01`;
     const endDate = `${options.month}-31`;
-    constraints.push(
-      where('date', '>=', startDate),
-      where('date', '<=', endDate)
-    );
+    query = query.gte('date', startDate).lte('date', endDate);
   }
 
   if (options?.type) {
-    constraints.push(where('type', '==', options.type));
+    query = query.eq('type', options.type);
   }
 
-  // Always add date ordering
-  constraints.push(orderBy('date', options?.orderDirection || 'desc'));
+  // Add date ordering
+  query = query.order('date', { ascending: options?.orderDirection === 'asc' });
 
   if (options?.limit) {
-    constraints.push(limit(options.limit));
+    query = query.limit(options.limit);
   }
 
-  return query(collection(db, 'transactions'), ...constraints);
+  return query;
 }

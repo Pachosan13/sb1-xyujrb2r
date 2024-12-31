@@ -1,4 +1,4 @@
-import { initializeApp, getApp, getApps } from 'firebase/app';
+/* import { initializeApp, getApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, enableIndexedDbPersistence } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
@@ -25,4 +25,4 @@ enableIndexedDbPersistence(db).catch((err) => {
   console.error('Error enabling offline persistence:', err);
 });
 
-export default app;
+export default app; */

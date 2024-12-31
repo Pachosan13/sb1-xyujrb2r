@@ -1,5 +1,4 @@
-import { collection, addDoc, getDocs, Timestamp, query, where, orderBy, limit } from 'firebase/firestore';
-import { db, auth } from '../config';
+import { supabase } from '../../../lib/supabase';
 import { validateTransaction } from './validation';
 import type { Transaction, TransactionFormData } from '../../../types/transaction';
 
@@ -8,38 +7,39 @@ export async function getTransactions(options?: {
   type?: string;
   limit?: number;
 }): Promise<Transaction[]> {
-  const user = auth.currentUser;
+  const user = (await supabase.auth.getUser()).data.user;
   if (!user) {
     throw new Error('Usuario no autenticado');
   }
 
   try {
-    const transactionsRef = collection(db, 'transactions');
-    let q = query(transactionsRef, where('userId', '==', user.uid));
+    let query = supabase
+      .from('transactions')
+      .select('*')
+      .eq('user_id', user.id);
 
     if (options?.month) {
       const startDate = `${options.month}-01`;
       const endDate = `${options.month}-31`;
-      q = query(q, where('date', '>=', startDate), where('date', '<=', endDate));
+      query = query.gte('date', startDate).lte('date', endDate);
     }
 
     if (options?.type) {
-      q = query(q, where('type', '==', options.type));
+      query = query.eq('type', options.type);
     }
 
     // Add date ordering
-    q = query(q, orderBy('date', 'desc'));
+    query = query.order('date', { ascending: false });
 
     // Add limit if specified
     if (options?.limit) {
-      q = query(q, limit(options.limit));
+      query = query.limit(options.limit);
     }
 
-    const querySnapshot = await getDocs(q);
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    } as Transaction));
+    const { data, error } = await query;
+    if (error) throw error;
+
+    return data as Transaction[];
   } catch (error) {
     console.error('Error fetching transactions:', error);
     throw error instanceof Error ? error : new Error('Error al obtener las transacciones');
@@ -47,7 +47,7 @@ export async function getTransactions(options?: {
 }
 
 export async function addTransaction(data: TransactionFormData): Promise<string> {
-  const user = auth.currentUser;
+  const user = (await supabase.auth.getUser()).data.user;
   if (!user) {
     throw new Error('Usuario no autenticado');
   }
@@ -56,16 +56,24 @@ export async function addTransaction(data: TransactionFormData): Promise<string>
     validateTransaction(data);
 
     const transactionData = {
-      ...data,
-      userId: user.uid,
-      createdAt: Timestamp.now(),
+      user_id: user.id,
+      type: data.type,
       amount: data.type === 'gasto' ? -Math.abs(data.amount) : Math.abs(data.amount),
-      date: new Date(data.date).toISOString().split('T')[0]
+      description: data.description,
+      category: data.category,
+      subcategory: data.subcategory,
+      date: data.date,
+      created_at: new Date().toISOString()
     };
 
-    const docRef = await addDoc(collection(db, 'transactions'), transactionData);
-    console.log('Transaction saved:', docRef.id);
-    return docRef.id;
+    const { data: result, error } = await supabase
+      .from('transactions')
+      .insert(transactionData)
+      .select()
+      .single();
+
+    if (error) throw error;
+    return result.id;
   } catch (error) {
     console.error('Error adding transaction:', error);
     throw error instanceof Error ? error : new Error('No se pudo guardar la transacción');

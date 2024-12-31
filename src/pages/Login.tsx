@@ -28,7 +28,8 @@ export default function Login() {
 
     try {
       if (isLogin) {
-        await login(email, password);
+        const result = await login(email, password);
+        console.log('Login result:', result);
       } else {
         if (!name.trim()) {
           throw new Error('Por favor ingrese su nombre');
