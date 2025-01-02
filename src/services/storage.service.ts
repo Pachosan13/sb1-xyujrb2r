@@ -2,7 +2,7 @@ import { supabase } from '../lib/supabase';
 
 export class StorageService {
   private static instance: StorageService;
-  private bucketName = 'documents';
+  private bucketName = 'cashai-storage';
 
   private constructor() {}
 
