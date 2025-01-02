@@ -2,7 +2,7 @@ import { supabase } from '../lib/supabase';
 
 export class StorageService {
   private static instance: StorageService;
-  private bucketName = 'documents';
+  private bucketName = 'cashai-storage';
 
   private constructor() {}
 
@@ -65,6 +65,7 @@ export class StorageService {
 
       if (uploadError) throw uploadError;
 
+      console.log('File uploaded successfully:', filePath);
       const { data: { publicUrl } } = supabase.storage
         .from(this.bucketName)
         .getPublicUrl(filePath);

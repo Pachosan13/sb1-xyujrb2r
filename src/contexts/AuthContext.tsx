@@ -59,11 +59,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email, 
       password 
     });
+    console.log('User data:', data);
     if (signUpError) throw signUpError;
 
     const { error: profileError } = await supabase
       .from('users')
-      .insert([{ id: data.user!.id, email, name }]);
+      .insert([{ id: data.user!.id, email, name, country_code: 'PA' }]);
     if (profileError) throw profileError;
   }
 
