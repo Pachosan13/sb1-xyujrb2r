@@ -8,6 +8,8 @@ import FinancialCharts from '../components/reports/FinancialCharts';
 import TransactionList from '../components/reports/TransactionList';
 import { Alert } from '../components/Alert';
 import { generatePDFReport, generateExcelReport } from '../utils/reportGenerators';
+import { Transaction } from '@/types/transaction';
+import { CategoryType } from '@/lib/cashai.types';
 
 export default function Reports() {
   const [loading, setLoading] = useState(true);
@@ -21,16 +23,16 @@ export default function Reports() {
     gastos: 0,
     facturasPendientes: 0,
     monthlyData: {
-      labels: [],
-      ingresos: [],
-      gastos: [],
+      labels: [''],
+      ingresos: [0],
+      gastos: [0],
     },
-    categoryData: [],
+    categoryData: [] as CategoryType[],
     monthlyComparison: {
-      labels: [],
-      data: [],
+      labels: [''],
+      data: [0],
     },
-    transactions: [],
+    transactions: [] as Transaction[],
   });
 
   useEffect(() => {
@@ -44,10 +46,10 @@ export default function Reports() {
       const transactionService = TransactionService.getInstance();
       
       // Get transactions for the selected period
-      const transactions = await transactionService.getTransactions();
+      const transactions = await transactionService.getTransactionsWithOptions();
       
       // Get monthly stats
-      const stats = await transactionService.getMonthlyStats(startDate.slice(0, 7));
+      const stats = await transactionService.getMonthlyStats(endDate.slice(0, 7));
 
       setData({
         ingresos: stats.ingresos,

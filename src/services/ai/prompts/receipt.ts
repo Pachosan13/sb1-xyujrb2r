@@ -3,23 +3,25 @@ export const RECEIPT_PROMPTS = {
   {
     "fecha": "YYYY-MM-DD",
     "monto": number,
-    "impuestos": number,
+    "impuestos": number[],
     "categoria": string,
-    "comercio": string,
-    "descripcion": string
+    "nombre del comercio o nombre del emisor": string,
+    "ruc del emisor": string,
+    "descripcion": string,
+    "servicios": string[]
   }
   
   Texto del recibo:`,
-
   systemRole: `Eres un asistente especializado en analizar documentos financieros.
   Extrae la siguiente información del texto proporcionado y devuélvela en formato JSON:
-  
   {
     "fecha": "YYYY-MM-DD",
     "monto": number,
-    "impuestos": number,
+    "impuestos": number[],
     "categoria": string,
-    "comercio": string,
-    "descripcion": string
+    "nombre del comercio o nombre del emisor": string,
+    "ruc del emisor": string,
+    "descripcion": string,
+    "servicios": string[]
   }`
 };

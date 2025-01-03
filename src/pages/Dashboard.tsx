@@ -8,6 +8,8 @@ import Charts from '../components/dashboard/Charts';
 import RecentActivity from '../components/dashboard/RecentActivity';
 import ScanModal from '../components/ScanModal';
 import { Alert } from '../components/Alert';
+import { CategoryType } from '@/lib/cashai.types';
+import { Transaction } from '@/types/transaction';
 
 export default function Dashboard() {
   const [showScanModal, setShowScanModal] = useState(false);
@@ -18,12 +20,12 @@ export default function Dashboard() {
     gastos: 0,
     facturasPendientes: 0,
     monthlyData: {
-      labels: [],
-      ingresos: [],
-      gastos: [],
+      labels: [''],
+      ingresos: [0],
+      gastos: [0],
     },
-    categoryData: [],
-    transactions: [],
+    categoryData: [] as CategoryType[],
+    transactions: [] as Transaction[],
   });
 
   useEffect(() => {
@@ -38,7 +40,7 @@ export default function Dashboard() {
         const stats = await transactionService.getMonthlyStats(currentMonth);
         
         // Get recent transactions
-        const transactions = await transactionService.getTransactions();
+        const transactions = await transactionService.getTransactionsWithOptions();
 
         setData({
           ingresos: stats.ingresos,
@@ -63,7 +65,7 @@ export default function Dashboard() {
     loadDashboardData();
   }, []);
 
-  const handleScanComplete = async (scanData: any, imageUrl: string) => {
+  const handleScanComplete = async () => {
     setShowScanModal(false);
     // TODO: Handle scan completion
   };

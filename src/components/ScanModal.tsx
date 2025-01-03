@@ -3,6 +3,7 @@ import Webcam from 'react-webcam';
 import { ReceiptService } from '../services/receipt.service';
 import { StorageService } from '../services/storage.service';
 import { Alert } from './Alert';
+import ConfirmationModal from './ConfirmationModal';
 
 interface ScanModalProps {
   onClose: () => void;
@@ -16,7 +17,7 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'camera' | 'upload'>('camera');
   
-  const receiptService = ReceiptService.getInstance();
+  const receiptService = ReceiptService.getInstance('openai');
   const storageService = StorageService.getInstance();
 
   const processImage = async (imageData: string) => {
@@ -24,12 +25,9 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
       setIsProcessing(true);
       setError(null);
 
-      // Upload image to Firebase Storage
       const imageUrl = await storageService.uploadBase64Image(imageData, `receipt-${Date.now()}.jpg`);
-      
-      // Process the receipt
       const analysis = await receiptService.processReceipt(imageData);
-      
+
       onScanComplete(analysis, imageUrl);
     } catch (error) {
       console.error('Error processing receipt:', error);
@@ -75,106 +73,108 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Escanear Documento</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
-            disabled={isProcessing}
-          >
-            ✕
-          </button>
-        </div>
-
-        {error && <Alert type="error" message={error} />}
-
-        <div className="flex border-b mb-4">
-          <button
-            className={`px-4 py-2 ${
-              activeTab === 'camera'
-                ? 'border-b-2 border-blue-500 text-blue-600'
-                : 'text-gray-500'
-            }`}
-            onClick={() => setActiveTab('camera')}
-            disabled={isProcessing}
-          >
-            📷 Cámara
-          </button>
-          <button
-            className={`px-4 py-2 ${
-              activeTab === 'upload'
-                ? 'border-b-2 border-blue-500 text-blue-600'
-                : 'text-gray-500'
-            }`}
-            onClick={() => setActiveTab('upload')}
-            disabled={isProcessing}
-          >
-            📁 Subir Archivo
-          </button>
-        </div>
-
-        {activeTab === 'camera' ? (
-          <div className="relative">
-            <Webcam
-              ref={webcamRef}
-              screenshotFormat="image/jpeg"
-              className="w-full rounded-lg"
-              videoConstraints={{
-                width: 1280,
-                height: 720,
-                facingMode: "environment"
-              }}
-            />
-            <div className="mt-4 flex justify-center">
-              <button
-                onClick={capture}
-                disabled={isProcessing}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isProcessing ? 'Procesando...' : 'Capturar'}
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="text-center py-8">
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleFileUpload}
-              accept="image/*"
-              className="hidden"
+    <>
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold">Escanear Documento</h2>
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700"
               disabled={isProcessing}
-            />
-            <div className="mb-4">
-              <button
-                onClick={() => fileInputRef.current?.click()}
-                disabled={isProcessing}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isProcessing ? 'Procesando...' : 'Seleccionar Archivo'}
-              </button>
-            </div>
-            <p className="text-sm text-gray-500">
-              Formatos soportados: JPG, PNG (máx. 5MB)
-            </p>
+            >
+              ✕
+            </button>
           </div>
-        )}
 
-        {isProcessing && (
-          <div className="mt-4">
-            <div className="animate-pulse flex space-x-4 items-center justify-center">
-              <div className="h-3 w-3 bg-blue-600 rounded-full"></div>
-              <div className="h-3 w-3 bg-blue-600 rounded-full"></div>
-              <div className="h-3 w-3 bg-blue-600 rounded-full"></div>
-            </div>
-            <p className="text-center text-sm text-gray-600 mt-2">
-              Procesando documento...
-            </p>
+          {error && <Alert type="error" message={error} />}
+
+          <div className="flex border-b mb-4">
+            <button
+              className={`px-4 py-2 ${
+                activeTab === 'camera'
+                  ? 'border-b-2 border-blue-500 text-blue-600'
+                  : 'text-gray-500'
+              }`}
+              onClick={() => setActiveTab('camera')}
+              disabled={isProcessing}
+            >
+              📷 Cámara
+            </button>
+            <button
+              className={`px-4 py-2 ${
+                activeTab === 'upload'
+                  ? 'border-b-2 border-blue-500 text-blue-600'
+                  : 'text-gray-500'
+              }`}
+              onClick={() => setActiveTab('upload')}
+              disabled={isProcessing}
+            >
+              📁 Subir Archivo
+            </button>
           </div>
-        )}
+
+          {activeTab === 'camera' ? (
+            <div className="relative">
+              <Webcam
+                ref={webcamRef}
+                screenshotFormat="image/jpeg"
+                className="w-full rounded-lg"
+                videoConstraints={{
+                  width: 1280,
+                  height: 720,
+                  facingMode: "environment"
+                }}
+              />
+              <div className="mt-4 flex justify-center">
+                <button
+                  onClick={capture}
+                  disabled={isProcessing}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isProcessing ? 'Procesando...' : 'Capturar'}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8">
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileUpload}
+                accept="image/*"
+                className="hidden"
+                disabled={isProcessing}
+              />
+              <div className="mb-4">
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isProcessing}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isProcessing ? 'Procesando...' : 'Seleccionar Archivo'}
+                </button>
+              </div>
+              <p className="text-sm text-gray-500">
+                Formatos soportados: JPG, PNG (máx. 5MB)
+              </p>
+            </div>
+          )}
+
+          {isProcessing && (
+            <div className="mt-4">
+              <div className="animate-pulse flex space-x-4 items-center justify-center">
+                <div className="h-3 w-3 bg-blue-600 rounded-full"></div>
+                <div className="h-3 w-3 bg-blue-600 rounded-full"></div>
+                <div className="h-3 w-3 bg-blue-600 rounded-full"></div>
+              </div>
+              <p className="text-center text-sm text-gray-600 mt-2">
+                Procesando documento...
+              </p>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

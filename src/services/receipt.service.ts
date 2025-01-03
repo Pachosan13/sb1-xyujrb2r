@@ -1,5 +1,6 @@
 import { AIFactory, type AIProviderType } from './ai/factory';
 import { createWorker } from 'tesseract.js';
+import { AIAnalysis } from './ai/types';
 
 export class ReceiptService {
   private static instance: ReceiptService;
@@ -16,10 +17,17 @@ export class ReceiptService {
     return ReceiptService.instance;
   }
 
-  public async processReceipt(imageData: string): Promise<any> {
+  public async processReceipt(imageData: string): Promise<AIAnalysis> {
     try {
       // Initialize Tesseract worker
-      const worker = await createWorker('spa');
+      const worker = await createWorker();
+
+      // Load the worker
+      await worker.load();
+
+      // Load the language
+      await worker.loadLanguage('spa');
+      await worker.initialize('spa');
 
       // Perform OCR
       const { data: { text } } = await worker.recognize(imageData);

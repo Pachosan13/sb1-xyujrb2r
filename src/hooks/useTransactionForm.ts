@@ -24,12 +24,13 @@ export function useTransactionForm({ onSuccess, onError }: UseTransactionFormPro
     if (!validateRequired(data.category)) {
       newErrors.category = 'La categoría es requerida';
     }
-    if (!validateRequired(data.subcategory)) {
-      newErrors.subcategory = 'La subcategoría es requerida';
-    }
     if (!validateDate(data.date)) {
       newErrors.date = 'La fecha es requerida';
     }
+    
+    /* if (!validateRequired(data.subcategory)) {
+      newErrors.subcategory = 'La subcategoría es requerida';
+    } */
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

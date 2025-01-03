@@ -4,6 +4,9 @@ export function validateAmount(amount: string): boolean {
 }
 
 export function validateRequired(value: string): boolean {
+  if (value === undefined || value === null) {
+    return false;
+  }
   return value.trim().length > 0;
 }
 

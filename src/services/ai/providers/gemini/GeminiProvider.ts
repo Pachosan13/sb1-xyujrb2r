@@ -31,11 +31,15 @@ export class GeminiProvider extends BaseAIProvider {
 
   protected async processReceiptText(text: string): Promise<any> {
     const prompt = `${RECEIPT_PROMPTS.analyze}\n${text}`;
+    console.log('Prompt:', prompt);
     const result = await this.model.generateContent(prompt);
     const response = await result.response;
-    const content = response.text();
+    console.log('Response:', response);
+    const content = response.candidates[0].content.parts[0].text;
 
+    console.log('Content:', content);
     const jsonMatch = content.match(/\{[\s\S]*\}/);
+    console.log('JSON Match:', jsonMatch);
     if (!jsonMatch) {
       throw new Error('No se pudo extraer información del documento');
     }

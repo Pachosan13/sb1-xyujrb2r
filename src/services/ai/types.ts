@@ -6,8 +6,10 @@ export interface AIProvider {
 export interface AIAnalysis {
   fecha: string;
   monto: number;
-  impuestos: number;
+  impuestos: number[];
   categoria: string;
   comercio: string;
+  ruc: string;
   descripcion: string;
+  servicios: string[];
 }

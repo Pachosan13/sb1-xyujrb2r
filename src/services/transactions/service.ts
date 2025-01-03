@@ -17,13 +17,17 @@ export class TransactionService {
     return addTransaction(data);
   }
 
-  async getTransactions(options?: { month?: string; limit?: number }): Promise<Transaction[]> {
+  async getTransactionsWithOptions(options?: { month?: string; limit?: number }): Promise<Transaction[]> {
     return getTransactions(options);
   }
 
   async getMonthlyStats(month: string) {
-    const transactions = await this.getTransactions({ month });
+    const transactions = await this.getTransactionsWithOptions({ month });
     
+    return this.getTransactions(transactions);
+  }
+
+  private async getTransactions(transactions: Transaction[]) {
     return transactions.reduce((acc, curr) => {
       const amount = Math.abs(curr.amount);
       

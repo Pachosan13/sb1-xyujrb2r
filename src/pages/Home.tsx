@@ -7,15 +7,26 @@ import { Alert } from '../components/Alert';
 import FinancialChatButton from '../components/dashboard/FinancialChatButton';
 import { ReportsSummary } from '../components/dashboard/ReportsSummary';
 import { RecentTransactions } from '../components/dashboard/RecentTransactions';
+import ConfirmationModal from '@/components/ConfirmationModal';
 
 export default function Home() {
   const [showForm, setShowForm] = useState(false);
   const [showScan, setShowScan] = useState(false);
   const [formType, setFormType] = useState<'ingreso' | 'gasto'>('gasto');
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [scannedData, setScannedData] = useState<any>(null);
+  const [scannedImageUrl, setScannedImageUrl] = useState<string>(''); 
 
   const openForm = (type: 'ingreso' | 'gasto') => {
     setFormType(type);
     setShowForm(true);
+  };
+
+  const scanComplete = (data: any, imageUrl: string) => {
+    console.log('data', data);
+    setScannedData(data);
+    setScannedImageUrl(imageUrl);
+    setShowConfirmation(true);
   };
 
   return (
@@ -76,7 +87,17 @@ export default function Home() {
         {showScan && (
           <ScanModal
             onClose={() => setShowScan(false)}
-            onScanComplete={() => setShowScan(false)}
+            onScanComplete={(data, imageUrl) => scanComplete(data, imageUrl)}
+          />
+        )}
+
+        {showConfirmation && (
+          <ConfirmationModal
+            data={scannedData}
+            imageUrl={scannedImageUrl}
+            onClose={() => {
+              setShowConfirmation(false);
+            }}
           />
         )}
       </main>
