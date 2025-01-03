@@ -18,7 +18,7 @@ export function useTransactions({ month, limit }: UseTransactionsProps = {}) {
         setLoading(true);
         setError(null);
         const transactionService = TransactionService.getInstance();
-        const data = await transactionService.getTransactions({ month, limit });
+        const data = await transactionService.getTransactionsWithOptions({ month, limit });
         setTransactions(data);
       } catch (err) {
         console.error('Error loading transactions:', err);

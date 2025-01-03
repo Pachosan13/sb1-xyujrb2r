@@ -3,6 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Alert } from '../components/Alert';
 import AuthHeader from '../components/auth/AuthHeader';
+import { signIn } from '@/services/auth.service';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ export default function Login() {
 
     try {
       if (isLogin) {
+        // const result = await signIn(email, password);
         const result = await login(email, password);
         console.log('Login result:', result);
       } else {
