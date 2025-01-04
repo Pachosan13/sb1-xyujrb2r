@@ -4,7 +4,7 @@ import { Menu } from '@headlessui/react';
 import { UserCircleIcon, ChatBubbleLeftIcon } from '@heroicons/react/24/outline';
 
 export default function Header() {
-  const { currentUser, logout, userData } = useAuth();
+  const { logout, userData } = useAuth();
 
   const handleLogout = async () => {
     try {

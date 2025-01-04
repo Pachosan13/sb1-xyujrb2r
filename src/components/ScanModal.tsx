@@ -3,7 +3,6 @@ import Webcam from 'react-webcam';
 import { ReceiptService } from '../services/receipt.service';
 import { StorageService } from '../services/storage.service';
 import { Alert } from './Alert';
-import ConfirmationModal from './ConfirmationModal';
 
 interface ScanModalProps {
   onClose: () => void;

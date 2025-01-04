@@ -9,11 +9,11 @@ interface ConfirmationModalProps {
   onClose: () => void;
 }
 
-export default function ConfirmationModal({ data, imageUrl, onClose }: ConfirmationModalProps) {
+export default function ConfirmationModal({ data, onClose }: ConfirmationModalProps) {
   const [transactionType, setTransactionType] = useState<'ingreso' | 'gasto'>('gasto');
   const [error, setError] = useState<string | null>(null);
 
-  const { submitTransaction, loading, errors } = useTransactionForm({
+  const { submitTransaction, loading } = useTransactionForm({
     onSuccess: onClose,
     onError: (err) => setError(err),
   });

@@ -25,7 +25,7 @@ export default function ActivityLog() {
     if (!currentUser) return;
     try {
       setLoading(true);
-      const data = await getActivityLog(currentUser.uid);
+      const data = await getActivityLog(currentUser.id);
       setEvents(data);
     } finally {
       setLoading(false);
