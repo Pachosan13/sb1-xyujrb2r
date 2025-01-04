@@ -32,5 +32,5 @@ export async function generatePDFReport(data: ReportData) {
 
 export async function generateExcelReport(data: ReportData) {
   // TODO: Implement Excel export
-  console.log('Excel export not implemented yet');
+  console.log('Excel export not implemented yet', data);
 }

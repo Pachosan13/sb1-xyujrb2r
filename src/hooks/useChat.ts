@@ -17,6 +17,7 @@ export function useChat() {
       setError(null);
       const chatService = ChatService.getInstance();
       const history = await chatService.getMessages();
+      console.log('history', history);
       setMessages(history);
     } catch (err) {
       console.error('Error loading messages:', err);

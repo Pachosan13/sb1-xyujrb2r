@@ -1,13 +1,11 @@
 import { useState } from 'react';
-import { useAuth } from '../../hooks/useAuth';
 import { Alert } from '../Alert';
 import DeviceList from './DeviceList';
 import ActivityLog from './ActivityLog';
 import TwoFactorSetup from './TwoFactorSetup';
 
 export default function SecuritySettings() {
-  const { currentUser } = useAuth();
-  const [error, setError] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
 
   return (
     <section className="bg-white rounded-lg shadow-sm">

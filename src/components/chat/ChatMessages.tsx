@@ -32,7 +32,7 @@ export default function ChatMessages({ messages, loading, error }: ChatMessagesP
             </div>
             <div className="text-sm whitespace-pre-wrap">{message.content}</div>
             <div className="text-xs opacity-75 mt-2">
-              {new Date(message.timestamp.toDate()).toLocaleTimeString()}
+              {new Date(message.timestamp).toLocaleTimeString()}
             </div>
           </div>
         </div>

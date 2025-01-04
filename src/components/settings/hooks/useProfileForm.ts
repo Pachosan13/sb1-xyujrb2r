@@ -1,11 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../../contexts/AuthContext';
-
-interface ProfileFormData {
-  name: string;
-  email: string;
-  phone: string;
-}
+import { ProfileFormData } from '@/lib/cashai.types';
 
 export function useProfileForm() {
   const { userData, updateUserProfile } = useAuth();

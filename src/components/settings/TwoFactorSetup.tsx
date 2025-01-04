@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ShieldCheckIcon } from '@heroicons/react/24/outline';
 
 export default function TwoFactorSetup() {
-  const [enabled, setEnabled] = useState(false);
+  const [enabled] = useState(false);
   const [showSetup, setShowSetup] = useState(false);
 
   return (

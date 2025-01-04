@@ -1,4 +1,3 @@
-import React from 'react';
 import { useCurrency } from '../../contexts/CurrencyContext';
 import { formatCurrency } from '../../utils/formatCurrency';
 

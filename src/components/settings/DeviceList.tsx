@@ -25,7 +25,7 @@ export default function DeviceList() {
     if (!currentUser) return;
     try {
       setLoading(true);
-      const data = await getDevices(currentUser.uid);
+      const data = await getDevices(currentUser.id);
       setDevices(data);
     } finally {
       setLoading(false);
@@ -35,7 +35,7 @@ export default function DeviceList() {
   const handleSignOutAll = async () => {
     if (!currentUser) return;
     try {
-      await signOutAllDevices(currentUser.uid);
+      await signOutAllDevices(currentUser.id);
       await loadDevices();
     } catch (error) {
       console.error('Error signing out devices:', error);

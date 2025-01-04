@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { PaperAirplaneIcon } from '@heroicons/react/24/outline';
+import { Message } from '@/types/chat';
 
 interface ChatInputProps {
-  onSend: (message: string) => Promise<void>;
+  onSend: (content: string) => Promise<Message>;
 }
 
 export default function ChatInput({ onSend }: ChatInputProps) {

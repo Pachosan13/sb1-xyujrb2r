@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
 import { Alert } from './Alert';
 import { useTransactionForm } from '../hooks/useTransactionForm';
 import type { TransactionFormData } from '../types/transaction';
+import { useState } from 'react';
 
 interface ConfirmationModalProps {
   data: any;

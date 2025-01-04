@@ -1,5 +1,5 @@
+import { TransactionService } from '@/services/transactions/service';
 import { useState, useEffect } from 'react';
-import { TransactionService } from '../services/transaction.service';
 
 interface FinancialData {
   ingresos: number;

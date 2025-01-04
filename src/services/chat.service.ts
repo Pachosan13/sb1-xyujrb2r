@@ -52,7 +52,7 @@ export class ChatService {
 
     try {
       // Save user message
-      const { data: userMessage, error: userError } = await supabase
+      const { error: userError } = await supabase
         .from('chat_messages')
         .insert({
           user_id: user.id,

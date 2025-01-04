@@ -41,3 +41,29 @@ export async function getCurrentUser(): Promise<User | null> {
   const { data: { user } } = await supabase.auth.getUser();
   return user;
 }
+
+export async function getActivityLog(userId: string): Promise<any[]> {
+  const { data, error } = await supabase
+    .from('activity_log')
+    .select('*')
+    .eq('user_id', userId);
+  if (error) throw error;
+  return data;
+}
+
+export async function getDevices(userId: string): Promise<any[]> {
+  const { data, error } = await supabase
+    .from('devices')
+    .select('*')
+    .eq('user_id', userId);
+  if (error) throw error;
+  return data;
+}
+
+export async function signOutAllDevices(userId: string) {
+  const { error } = await supabase
+    .from('devices')
+    .delete()
+    .eq('user_id', userId);
+  if (error) throw error;
+}

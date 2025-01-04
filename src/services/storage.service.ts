@@ -23,7 +23,7 @@ export class StorageService {
       }
 
       const filePath = `${user.id}/${Date.now()}_${file.name}`;
-      const { error: uploadError, data } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from(this.bucketName)
         .upload(filePath, file);
 

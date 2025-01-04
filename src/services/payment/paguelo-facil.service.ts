@@ -1,4 +1,4 @@
-import { auth } from '../firebase/config';
+import { supabase } from '@/lib/supabase';
 
 interface PagueloFacilConfig {
   cclw: string; // Clave de comercio
@@ -27,8 +27,8 @@ export class PagueloFacilService {
   }
 
   async createPaymentLink(amount: number, description: string): Promise<string> {
-    const user = auth.currentUser;
-    if (!user) {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error) {
       throw new Error('Usuario no autenticado');
     }
 
@@ -44,9 +44,9 @@ export class PagueloFacilService {
           currency: this.config.currency,
           description,
           expiration_days: this.config.expirationDays,
-          email: user.email,
-          phone: user.phoneNumber || '',
-          name: user.displayName || ''
+          email: user?.email,
+          phone: user?.user_metadata.phone || '',
+          name: user?.user_metadata.name || ''
         })
       });
 

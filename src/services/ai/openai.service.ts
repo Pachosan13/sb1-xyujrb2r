@@ -52,18 +52,18 @@ export class OpenAIService implements AIProvider {
   public async chat(prompt: string, context?: string): Promise<string> {
     try {
       const messages = [
-        { role: 'system' as const, content: CHAT_PROMPTS.systemRole }
+        { role: 'system' as 'system' | 'user', content: CHAT_PROMPTS.systemRole }
       ];
 
       if (context) {
         messages.push({
-          role: 'system' as const,
+          role: 'system',
           content: `Contexto: ${context}`
         });
       }
 
       messages.push({
-        role: 'user' as const,
+        role: 'user',
         content: prompt
       });
 

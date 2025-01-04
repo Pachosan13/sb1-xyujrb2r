@@ -6,7 +6,7 @@ import { LATAM_COUNTRIES } from '../../../types/currency';
 
 export default function PreferencesSettings() {
   const { country, setCountry } = useCurrency();
-  const [loading, setLoading] = useState(false);
+  const [ , setLoading] = useState(false);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
 

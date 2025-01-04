@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import TransactionForm from '../components/TransactionForm';
 import ScanModal from '../components/ScanModal';
-import { Alert } from '../components/Alert';
 import FinancialChatButton from '../components/dashboard/FinancialChatButton';
 import { ReportsSummary } from '../components/dashboard/ReportsSummary';
 import { RecentTransactions } from '../components/dashboard/RecentTransactions';

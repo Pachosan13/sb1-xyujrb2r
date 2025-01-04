@@ -1,6 +1,6 @@
 import { supabase } from '../../lib/supabase';
-import { validateTransaction } from './validation';
 import type { Transaction, TransactionFormData } from '../../types/transaction';
+import { validateTransaction } from '../firebase/transactions';
 
 export async function getTransactions(options?: { 
   month?: string;

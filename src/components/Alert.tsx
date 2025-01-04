@@ -12,7 +12,7 @@ export function Alert({ type = 'info', message }: AlertProps) {
   };
 
   return (
-    <div className={`p-4 rounded-lg text-sm ${styles[type]}`}>
+    <div className={`mb-4 p-4 rounded-lg text-sm ${styles[type]}`}>
       {message}
     </div>
   );

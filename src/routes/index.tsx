@@ -8,6 +8,7 @@ import Chat from '../pages/Chat';
 import Support from '../pages/Support';
 import Settings from '../pages/Settings';
 import PrivateRoute from '../components/PrivateRoute';
+import ForgotPassword from '../pages/ForgotPassword';
 
 export function AppRoutes() {
   return (
@@ -43,6 +44,9 @@ export function AppRoutes() {
         <PrivateRoute>
           <Settings />
         </PrivateRoute>
+      } />
+      <Route path="/forgot-password" element={
+        <ForgotPassword />
       } />
     </Routes>
   );

@@ -5,6 +5,7 @@ export default function ChatAttachments() {
   const [uploading, setUploading] = useState(false);
 
   const handleFileUpload = async (file: File) => {
+    console.log('file', file);
     try {
       setUploading(true);
       // TODO: Implement file upload logic

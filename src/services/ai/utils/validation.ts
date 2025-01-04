@@ -9,7 +9,9 @@ export function validateAnalysis(analysis: any): AIAnalysis {
     impuestos: typeof analysis.impuestos === 'number' ? analysis.impuestos : 0,
     categoria: analysis.categoria || 'otros',
     comercio: analysis.comercio || 'Comercio no identificado',
-    descripcion: analysis.descripcion || ''
+    descripcion: analysis.descripcion || '',
+    ruc: analysis.ruc || '',
+    servicios: analysis.servicios || ''
   };
 }
 

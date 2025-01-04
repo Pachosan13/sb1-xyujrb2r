@@ -1,14 +1,21 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { User } from '@supabase/supabase-js';
+import { User, Session, WeakPassword } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
+import { ProfileFormData } from '@/lib/cashai.types';
 
 interface AuthContextType {
   currentUser: User | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<{
+    user: User;
+    session: Session;
+    weakPassword?: WeakPassword;
+  }>;
   register: (email: string, password: string, name: string) => Promise<void>;
   logout: () => Promise<void>;
   loading: boolean;
-  userData: { name: string } | null;
+  userData: ProfileFormData | null;
+  updateUserProfile: (data: ProfileFormData) => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -24,19 +31,21 @@ export function useAuth() {
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
-  const [userData, setUserData] = useState<{ name: string } | null>(null);
+  const [userData, setUserData] = useState<ProfileFormData | null>(null);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('event', event, session);
         setCurrentUser(session?.user ?? null);
         if (session?.user) {
-          const { data } = await supabase
-            .from('users')
-            .select('name')
-            .eq('id', session.user.id)
-            .single();
-          setUserData(data);
+          console.log('session.user', session.user);
+          const profileData: ProfileFormData = {
+            name: session.user?.user_metadata.name || '',
+            email: session.user?.email || '',  
+            phone: session.user?.user_metadata.phone || '',
+          };
+          setUserData(profileData);
         } else {
           setUserData(null);
         }
@@ -74,13 +83,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (error) throw error;
   }
 
+  async function resetPassword(email: string) {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: 'http://localhost:5173/login'
+    });
+    if (error) throw error;
+  }
+
+  async function updateUserProfile(data: ProfileFormData) {
+    setUserData(data);
+  }
+
   const value = {
     currentUser,
     login,
     register,
     logout,
     loading,
-    userData
+    userData,
+    resetPassword,
+    updateUserProfile
   };
 
   return (

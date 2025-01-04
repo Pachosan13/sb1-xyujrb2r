@@ -28,7 +28,8 @@ export default function UserSettings() {
 
       await updateUserProfile({
         name: formData.name,
-        email: formData.email
+        email: formData.email,
+        phone: ''
       });
 
       if (formData.countryCode && formData.countryCode !== country?.code) {

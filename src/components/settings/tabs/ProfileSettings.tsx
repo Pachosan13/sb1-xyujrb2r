@@ -52,7 +52,7 @@ export default function ProfileSettings() {
 
       <FormInput
         label="Teléfono"
-        type="tel"
+        type="text"
         value={formData.phone}
         onChange={(value) => setFormData({ ...formData, phone: value })}
       />

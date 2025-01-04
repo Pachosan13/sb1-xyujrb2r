@@ -1,5 +1,3 @@
-import { Timestamp } from 'firebase/firestore';
-
 export interface Invoice {
   id?: string;
   userId: string;
@@ -9,6 +7,6 @@ export interface Invoice {
   merchant: string;
   category: string;
   imageUrl: string;
-  createdAt: Timestamp;
+  createdAt: string;
   status: 'active' | 'deleted';
 }

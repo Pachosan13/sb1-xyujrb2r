@@ -3,7 +3,6 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Alert } from '../components/Alert';
 import AuthHeader from '../components/auth/AuthHeader';
-import { signIn } from '@/services/auth.service';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -56,7 +55,7 @@ export default function Login() {
             {isLogin ? 'Iniciar Sesión' : 'Registrarse'}
           </h2>
           
-          {error && <Alert type="error" message={error} className="mb-4" />}
+          {error && <Alert type="error" message={error} />}
           
           <form onSubmit={handleSubmit} className="space-y-4">
             {!isLogin && (
