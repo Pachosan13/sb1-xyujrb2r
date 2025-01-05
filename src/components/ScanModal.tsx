@@ -45,6 +45,7 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
       return;
     }
 
+    console.log('imageSrc', imageSrc);
     await processImage(imageSrc);
   }, []);
 
@@ -120,8 +121,8 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
                 screenshotFormat="image/jpeg"
                 className="w-full rounded-lg"
                 videoConstraints={{
-                  width: 1280,
-                  height: 720,
+                  width: 1920,
+                  height: 1080,
                   facingMode: "environment"
                 }}
               />

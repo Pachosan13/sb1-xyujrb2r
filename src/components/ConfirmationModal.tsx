@@ -18,13 +18,20 @@ export default function ConfirmationModal({ data, onClose }: ConfirmationModalPr
     onError: (err) => setError(err),
   });
 
+  // TOOD inroducir una subcategoria nueva segun la categoria escogida
+  // extraida de la factura
+  // 1. revisar si la categoria extraida existe en la lista de categorias
+  // 2. si no existe, buscar con AI a que categoria de la BD pertenece 
+  //      y crear una nueva subcategoria con el nombre de la categoria extraida
+  // 3. si existe, usar la categoria extraida
+
   const handleConfirm = async () => {
     const transaction: TransactionFormData = {
       type: transactionType,
       amount: data.monto,
       description: data.descripcion,
       category: data.categoria,
-      subcategory: data.subcategoria,
+      subcategory: data.subcategoria ?? 'sub',
       date: data.fecha || new Date().toISOString().split('T')[0],
     };
 
