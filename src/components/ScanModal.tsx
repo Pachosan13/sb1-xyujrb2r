@@ -39,12 +39,7 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
   const capture = useCallback(async () => {
     if (!webcamRef.current) return;
 
-    const imageSrc = webcamRef.current.getScreenshot(
-      {
-        width: 1920,
-        height: 1080,
-      }
-    );
+    const imageSrc = webcamRef.current.getScreenshot();
     if (!imageSrc) {
       setError('No se pudo capturar la imagen');
       return;
