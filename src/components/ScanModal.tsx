@@ -121,9 +121,11 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
                 screenshotFormat="image/jpeg"
                 className="w-full rounded-lg"
                 videoConstraints={{
-                  width: 1920,
-                  height: 1080,
-                  facingMode: "environment"
+                  width: 3840,
+                  height: 2160,
+                  facingMode: "environment",
+                  aspectRatio: 16/9,
+                  frameRate: 30
                 }}
               />
               <div className="mt-4 flex justify-center">
