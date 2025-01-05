@@ -39,7 +39,12 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
   const capture = useCallback(async () => {
     if (!webcamRef.current) return;
 
-    const imageSrc = webcamRef.current.getScreenshot();
+    const imageSrc = webcamRef.current.getScreenshot(
+      {
+        width: 1920,
+        height: 1080,
+      }
+    );
     if (!imageSrc) {
       setError('No se pudo capturar la imagen');
       return;
@@ -127,6 +132,7 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
                   aspectRatio: 16/9,
                   frameRate: 30
                 }}
+                screenshotQuality={1.0}
               />
               <div className="mt-4 flex justify-center">
                 <button
