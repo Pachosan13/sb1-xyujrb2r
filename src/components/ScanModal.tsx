@@ -51,10 +51,10 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
       return;
     }
 
-    if (isImageBlurry(imageSrc)) {
+    /* if (isImageBlurry(imageSrc)) {
       setError('La imagen es demasiado borrosa');
       return;
-    }
+    } */
 
     console.log('imageSrc', imageSrc);
     await processImage(imageSrc);
