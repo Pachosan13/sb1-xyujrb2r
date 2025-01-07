@@ -51,10 +51,10 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
       return;
     }
 
-    /* if (isImageBlurry(imageSrc)) {
+    if (isImageBlurry(imageSrc)) {
       setError('La imagen es demasiado borrosa');
       return;
-    } */
+    }
 
     console.log('imageSrc', imageSrc);
     await processImage(imageSrc);
@@ -144,12 +144,14 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
             </button>
           </div>
 
-          {activeTab === 'camera' ? (
-            <div className="relative">
-              <Webcam
-                ref={webcamRef}
-                screenshotFormat="image/jpeg"
-                className="w-full rounded-lg"
+          {!isProcessing && (
+            <div>
+              {activeTab === 'camera' ? (
+                <div className="relative">
+                  <Webcam
+                  ref={webcamRef}
+                  screenshotFormat="image/jpeg"
+                  className="w-full rounded-lg"
                 videoConstraints={{
                   width: 3840,
                   height: 2160,
@@ -192,6 +194,8 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
                 Formatos soportados: JPG, PNG (máx. 5MB)
               </p>
             </div>
+          )}
+          </div>
           )}
 
           {isProcessing && (
