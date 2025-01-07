@@ -64,7 +64,7 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
   function isImageBlurry(imageSrc: any) {
     const img = new Image();
     img.src = imageSrc;
-    const cvImg = cv.imread(img);
+    const cvImg = cv.imread(img as HTMLImageElement);
     const gray = new cv.Mat();
     cv.cvtColor(cvImg, gray, cv.COLOR_RGBA2GRAY, 0); // Convert to grayscale
 
