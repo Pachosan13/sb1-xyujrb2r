@@ -50,9 +50,14 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
       setError('No se pudo capturar la imagen');
       return;
     }
-
-    console.log('imageSrc', imageSrc);
-    await processImage(imageSrc);
+    
+    const adjustedImage = await adjustBrightness(imageSrc, 1.5);
+    if (adjustedImage) {
+      await processImage(adjustedImage);
+    } else {
+      setError('No se pudo ajustar la imagen');
+      await processImage(imageSrc);
+    }
   }, []);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,6 +82,37 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
       setIsProcessing(false);
     }
   };
+
+  function adjustBrightness(imageData: string, brightness: number) {
+    const image = new Image();
+    image.src = imageData;
+    
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    
+    return new Promise<string>((resolve) => {
+      image.onload = () => {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        if (!ctx) return;
+        
+        ctx.drawImage(image, 0, 0);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        
+        if (!imageData) return;
+        const data = imageData.data;
+        
+        for (let i = 0; i < data.length; i += 4) {
+          data[i] = Math.min(255, data[i] * brightness);
+          data[i + 1] = Math.min(255, data[i + 1] * brightness);
+          data[i + 2] = Math.min(255, data[i + 2] * brightness);
+        }
+        
+        ctx.putImageData(imageData, 0, 0);
+        resolve(canvas.toDataURL());
+      };
+    });
+  }
 
   return (
     <>
