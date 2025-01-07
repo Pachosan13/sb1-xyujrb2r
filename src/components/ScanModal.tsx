@@ -64,6 +64,8 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
   // Assuming OpenCV.js is loaded and available as cv
   function isImageBlurry(imageSrc: any) {
     const img = new Image();
+    img.width = 1280;
+    img.height = 720;
     img.src = imageSrc;
     const cvImg = cv.imread(img as HTMLImageElement);
     const gray = new cv.Mat();
