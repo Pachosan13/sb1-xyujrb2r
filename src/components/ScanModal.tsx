@@ -151,7 +151,7 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
                   <Webcam
                   ref={webcamRef}
                   screenshotFormat="image/jpeg"
-                  className="w-fit rounded-lg"
+                  className="w-5/6 rounded-lg"
                 videoConstraints={{
                   width: 1280,
                   height: 720,
