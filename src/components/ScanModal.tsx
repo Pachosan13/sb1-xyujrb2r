@@ -3,7 +3,6 @@ import Webcam from 'react-webcam';
 import { ReceiptService } from '../services/receipt.service';
 import { StorageService } from '../services/storage.service';
 import { Alert } from './Alert';
-import cv from 'opencv-ts';
 
 interface ScanModalProps {
   onClose: () => void;
@@ -52,37 +51,9 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
       return;
     }
 
-    if (isImageBlurry(imageSrc)) {
-      setError('La imagen es demasiado borrosa');
-      return;
-    }
-
     console.log('imageSrc', imageSrc);
     await processImage(imageSrc);
   }, []);
-
-  // Assuming OpenCV.js is loaded and available as cv
-  function isImageBlurry(imageSrc: any) {
-    const img = new Image();
-    img.width = 1280;
-    img.height = 720;
-    img.src = imageSrc;
-    const cvImg = cv.imread(img as HTMLImageElement);
-    const gray = new cv.Mat();
-    cv.cvtColor(cvImg, gray, cv.COLOR_RGBA2GRAY, 0); // Convert to grayscale
-
-    const laplacian = new cv.Mat();
-    cv.Laplacian(gray, laplacian, cv.CV_64F, 1, 1, 0, cv.BORDER_DEFAULT);
-
-    const mean = new cv.Mat();
-    const stddev = new cv.Mat();
-    cv.meanStdDev(laplacian, mean, stddev); // Calculate mean and standard deviation
-
-    const variance = stddev.data64F[0] * stddev.data64F[0];
-    cvImg.delete(); gray.delete(); laplacian.delete(); mean.delete(); stddev.delete();
-
-    return variance < 100; // Threshold for blurriness, adjust as needed
-  }
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
