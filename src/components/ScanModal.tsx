@@ -62,9 +62,11 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
 
   // Assuming OpenCV.js is loaded and available as cv
   function isImageBlurry(imageSrc: any) {
-    const img = cv.imread(imageSrc); // Read the image
+    const img = new Image();
+    img.src = imageSrc;
+    const cvImg = cv.imread(img);
     const gray = new cv.Mat();
-    cv.cvtColor(img, gray, cv.COLOR_RGBA2GRAY, 0); // Convert to grayscale
+    cv.cvtColor(cvImg, gray, cv.COLOR_RGBA2GRAY, 0); // Convert to grayscale
 
     const laplacian = new cv.Mat();
     cv.Laplacian(gray, laplacian, cv.CV_64F, 1, 1, 0, cv.BORDER_DEFAULT);
@@ -74,7 +76,7 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
     cv.meanStdDev(laplacian, mean, stddev); // Calculate mean and standard deviation
 
     const variance = stddev.data64F[0] * stddev.data64F[0];
-    img.delete(); gray.delete(); laplacian.delete(); mean.delete(); stddev.delete();
+    cvImg.delete(); gray.delete(); laplacian.delete(); mean.delete(); stddev.delete();
 
     return variance < 100; // Threshold for blurriness, adjust as needed
   }
