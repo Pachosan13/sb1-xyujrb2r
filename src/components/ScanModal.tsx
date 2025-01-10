@@ -19,11 +19,12 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
   const receiptService = ReceiptService.getInstance('openai');
   const storageService = StorageService.getInstance();
 
-  const processImage = async (imageData: string) => {
+  const processImage = async (imageData: string, imageDataBefore: string) => {
     try {
       setIsProcessing(true);
       setError(null);
 
+      await storageService.uploadBase64Image(imageDataBefore, `receipt-before-${Date.now()}.jpg`);
       const imageUrl = await storageService.uploadBase64Image(imageData, `receipt-${Date.now()}.jpg`);
       const analysis = await receiptService.processReceipt(imageData);
 
