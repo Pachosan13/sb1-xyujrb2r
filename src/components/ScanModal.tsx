@@ -54,7 +54,7 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
       return;
     }
     
-    const adjustedImage = await adjustBrightness(imageSrc, 1.5);
+    const adjustedImage = await adjustBrightness(imageSrc, 3.5);
     if (adjustedImage) {
       await processImage(imageSrc, adjustedImage);
     } else {
