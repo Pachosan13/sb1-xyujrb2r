@@ -61,9 +61,13 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
     while (brightnessThreshold >= 1) {
       adjustedImage = await adjustBrightness(imageSrc, brightnessThreshold);
       if (adjustedImage) {
-        analysis = await receiptService.processReceipt(adjustedImage);
-        if (analysis && analysis.monto) {
-          break;
+        try {
+          analysis = await receiptService.processReceipt(adjustedImage);
+          if (analysis && analysis.monto) {
+            break;
+          }
+        } catch (error) {
+          console.error('Error processing receipt:', error);
         }
       }
       brightnessThreshold -= 0.5;
