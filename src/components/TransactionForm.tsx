@@ -20,7 +20,8 @@ export default function TransactionForm({ type, onSuccess, onError, initialData 
     description: initialData?.description || '',
     category: initialData?.category || '',
     subcategory: initialData?.subcategory || '',
-    date: initialData?.date || new Date().toISOString().split('T')[0]
+    date: initialData?.date || new Date().toISOString().split('T')[0],
+    businessName: initialData?.businessName || '',
   });
 
   const [error, setError] = useState<string | null>(null);
@@ -44,7 +45,8 @@ export default function TransactionForm({ type, onSuccess, onError, initialData 
       description: formData.description || '',
       category: formData.category || '',
       subcategory: formData.subcategory || '',
-      date: formData.date || new Date().toISOString().split('T')[0]
+      date: formData.date || new Date().toISOString().split('T')[0],
+      businessName: formData.businessName || '',
     };
 
     await submitTransaction(transaction);
@@ -56,6 +58,14 @@ export default function TransactionForm({ type, onSuccess, onError, initialData 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {error && <Alert type="error" message={error} />}
+
+      <FormInput
+        label="Nombre del negocio"
+        value={formData.businessName || ''}
+        onChange={(value) => setFormData({ ...formData, businessName: value })}
+        required
+        error={errors.businessName}
+      />
 
       <FormInput
         label="Monto"

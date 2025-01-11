@@ -27,6 +27,9 @@ export function useTransactionForm({ onSuccess, onError }: UseTransactionFormPro
     if (!validateDate(data.date)) {
       newErrors.date = 'La fecha es requerida';
     }
+    if (!validateRequired(data.businessName)) {
+      newErrors.businessName = 'El nombre del negocio es requerido';
+    }
     
     /* if (!validateRequired(data.subcategory)) {
       newErrors.subcategory = 'La subcategoría es requerida';
@@ -45,7 +48,7 @@ export function useTransactionForm({ onSuccess, onError }: UseTransactionFormPro
       setLoading(true);
       const transactionService = TransactionService.getInstance();
       const id = await transactionService.addTransaction(data);
-      console.log('Transaction submitted:', id);
+      console.log('Transaction submitted:', id, data);
       onSuccess?.();
     } catch (error) {
       console.error('Transaction error:', error);

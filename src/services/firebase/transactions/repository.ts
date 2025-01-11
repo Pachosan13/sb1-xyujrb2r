@@ -63,7 +63,8 @@ export async function addTransaction(data: TransactionFormData): Promise<string>
       category: data.category,
       subcategory: data.subcategory,
       date: data.date,
-      created_at: new Date().toISOString()
+      created_at: new Date().toISOString(),
+      businessname: data.businessName,
     };
 
     const { data: result, error } = await supabase

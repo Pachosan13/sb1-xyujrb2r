@@ -50,7 +50,8 @@ export async function addTransaction(data: TransactionFormData): Promise<string>
       description: data.description,
       category: data.category,
       subcategory: data.subcategory,
-      date: data.date
+      date: data.date,
+      businessName: data.businessName,
     };
 
     const { data: result, error } = await supabase

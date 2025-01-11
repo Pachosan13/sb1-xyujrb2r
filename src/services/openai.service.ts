@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { validateAnalysis } from './ai/utils/validation';
 
 export class OpenAIService {
   private static instance: OpenAIService;
@@ -42,7 +43,7 @@ export class OpenAIService {
               "monto": number,
               "impuestos": number,
               "categoria": string,
-              "comercio": string,
+              "nombres": string[],
               "descripcion": string
             }`
           },
@@ -60,7 +61,7 @@ export class OpenAIService {
       }
 
       const analysis = JSON.parse(response.choices[0].message.content);
-      return this.validateAnalysis(analysis);
+      return validateAnalysis(analysis);
     } catch (error) {
       console.error('Error en OpenAI:', error);
       if (error instanceof Error) {
@@ -71,17 +72,5 @@ export class OpenAIService {
       }
       throw new Error('Error al procesar el documento');
     }
-  }
-
-  private validateAnalysis(analysis: any): any {
-    const currentDate = new Date().toISOString().split('T')[0];
-    return {
-      fecha: analysis.fecha || currentDate,
-      monto: typeof analysis.monto === 'number' ? analysis.monto : 0,
-      impuestos: typeof analysis.impuestos === 'number' ? analysis.impuestos : 0,
-      categoria: analysis.categoria || 'otros',
-      comercio: analysis.comercio || 'Comercio no identificado',
-      descripcion: analysis.descripcion || ''
-    };
   }
 }

@@ -1,7 +1,7 @@
 import { Alert } from './Alert';
 import { useTransactionForm } from '../hooks/useTransactionForm';
 import type { TransactionFormData } from '../types/transaction';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface ConfirmationModalProps {
   data: any;
@@ -12,6 +12,7 @@ interface ConfirmationModalProps {
 export default function ConfirmationModal({ data, onClose }: ConfirmationModalProps) {
   const [transactionType, setTransactionType] = useState<'ingreso' | 'gasto'>('gasto');
   const [error, setError] = useState<string | null>(null);
+  const [selectedName, setSelectedName] = useState<string>('');
 
   const { submitTransaction, loading } = useTransactionForm({
     onSuccess: onClose,
@@ -25,6 +26,8 @@ export default function ConfirmationModal({ data, onClose }: ConfirmationModalPr
   //      y crear una nueva subcategoria con el nombre de la categoria extraida
   // 3. si existe, usar la categoria extraida
 
+  
+
   const handleConfirm = async () => {
     const transaction: TransactionFormData = {
       type: transactionType,
@@ -33,10 +36,19 @@ export default function ConfirmationModal({ data, onClose }: ConfirmationModalPr
       category: data.categoria,
       subcategory: data.subcategoria ?? 'sub',
       date: data.fecha || new Date().toISOString().split('T')[0],
+      businessName: selectedName
     };
 
     await submitTransaction(transaction);
   };
+
+  useEffect(() => {
+    console.log('confirmation data', data);
+  }, [data]);
+
+  useEffect(() => {
+    console.log('selectedName', selectedName);
+  }, [selectedName]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -55,6 +67,35 @@ export default function ConfirmationModal({ data, onClose }: ConfirmationModalPr
           <p><strong>Descripción:</strong> {data.descripcion}</p>
           <p><strong>Categoría:</strong> {data.categoria}</p>
           <p><strong>Fecha:</strong> {new Date(data.fecha).toLocaleDateString()}</p>
+          {data.nombres.length > 1 ? (
+            <div>
+              <label><strong>Nombre:</strong></label>
+              <select
+                value={selectedName}
+                onChange={(e) => setSelectedName(e.target.value)}
+                className="ml-2 border rounded p-1"
+              >
+                {data.nombres.map((name: string, index: number) => (
+                  <option key={index} value={name}>
+                    {name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          ) : data.nombres.length === 1 ? (
+            <p><strong>Nombre:</strong> {data.nombres[0]}</p>
+          ) : (
+            <div>
+              <label><strong>Nombre:</strong></label>
+              <input
+                type="text"
+                value={selectedName || ''}
+                onChange={(e) => setSelectedName(e.target.value)}
+                className="ml-2 border rounded p-1"
+                placeholder="Ingrese nombre"
+              />
+            </div>
+          )}
         </div>
 
         <div className="mb-4">

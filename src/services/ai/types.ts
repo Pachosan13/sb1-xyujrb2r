@@ -8,7 +8,7 @@ export interface AIAnalysis {
   monto: number;
   impuestos: number[];
   categoria: string;
-  comercio: string;
+  nombres: string[];
   ruc: string;
   descripcion: string;
   servicios: string[];

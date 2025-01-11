@@ -5,7 +5,7 @@ export const RECEIPT_PROMPTS = {
     "monto": number,
     "impuestos": number[],
     "categoria": string,
-    "nombre del comercio o nombre del emisor": string,
+    "nombres": string[],
     "ruc del emisor": string,
     "descripcion": string,
     "servicios": string[]
@@ -19,7 +19,7 @@ export const RECEIPT_PROMPTS = {
     "monto": number,
     "impuestos": number[],
     "categoria": string,
-    "nombre del comercio o nombre del emisor": string,
+    "nombres": string[],
     "ruc del emisor": string,
     "descripcion": string,
     "servicios": string[]

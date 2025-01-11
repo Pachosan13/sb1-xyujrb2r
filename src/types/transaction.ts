@@ -5,6 +5,7 @@ export interface TransactionFormData {
   category: string;
   subcategory: string;
   date: string;
+  businessName: string;
 }
 
 export interface Transaction extends TransactionFormData {
