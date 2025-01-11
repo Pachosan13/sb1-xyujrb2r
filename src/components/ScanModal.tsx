@@ -19,14 +19,10 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
   const receiptService = ReceiptService.getInstance('openai');
   const storageService = StorageService.getInstance();
 
-  const processImage = async (imageData: string, imageDataBefore = '') => {
+  const processImage = async (imageData: string) => {
     try {
       setIsProcessing(true);
       setError(null);
-
-      if (imageDataBefore) {
-        await storageService.uploadBase64Image(imageDataBefore, `receipt-before-${Date.now()}.jpg`);
-      }
       const imageUrl = await storageService.uploadBase64Image(imageData, `receipt-${Date.now()}.jpg`);
       const analysis = await receiptService.processReceipt(imageData);
 
@@ -56,7 +52,7 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
     
     const adjustedImage = await adjustBrightness(imageSrc, 3.5);
     if (adjustedImage) {
-      await processImage(imageSrc, adjustedImage);
+      await processImage(adjustedImage);
     } else {
       setError('No se pudo ajustar la imagen');
       await processImage(imageSrc);
