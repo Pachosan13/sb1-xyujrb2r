@@ -63,11 +63,7 @@ export default function ConfirmationModal({ data, onClose }: ConfirmationModalPr
         {error && <Alert type="error" message={error} />}
 
         <div className="mb-4">
-          <p><strong>Monto:</strong> ${data.monto.toLocaleString()}</p>
-          <p><strong>Descripción:</strong> {data.descripcion}</p>
-          <p><strong>Categoría:</strong> {data.categoria}</p>
-          <p><strong>Fecha:</strong> {new Date(data.fecha).toLocaleDateString()}</p>
-          {data.nombres.length > 1 ? (
+        {data.nombres.length > 1 ? (
             <div>
               <label><strong>Nombre:</strong></label>
               <select
@@ -96,6 +92,10 @@ export default function ConfirmationModal({ data, onClose }: ConfirmationModalPr
               />
             </div>
           )}
+          <p><strong>Monto:</strong> ${data.monto.toLocaleString()}</p>
+          <p><strong>Descripción:</strong> {data.descripcion}</p>
+          <p><strong>Categoría:</strong> {data.categoria}</p>
+          <p><strong>Fecha:</strong> {new Date(data.fecha).toLocaleDateString()}</p>
         </div>
 
         <div className="mb-4">
