@@ -50,7 +50,26 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
       return;
     }
     
-    const adjustedImage = await adjustBrightness(imageSrc, 3.5);
+    let brightnessThreshold = 3.5;
+    let analysis = null;
+    let adjustedImage = null;
+
+    while (brightnessThreshold >= 1) {
+      adjustedImage = await adjustBrightness(imageSrc, brightnessThreshold);
+      if (adjustedImage) {
+        analysis = await receiptService.processReceipt(adjustedImage);
+        if (analysis && analysis.monto) {
+          break;
+        }
+      }
+      brightnessThreshold -= 0.5;
+    }
+
+    if (!analysis || !analysis.monto) {
+      setError('No se pudo procesar el recibo');
+      return;
+    }
+    
     if (adjustedImage) {
       await processImage(adjustedImage);
     } else {
