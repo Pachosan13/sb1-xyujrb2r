@@ -3,6 +3,7 @@ import Webcam from 'react-webcam';
 import { ReceiptService } from '../services/receipt.service';
 import { StorageService } from '../services/storage.service';
 import { Alert } from './Alert';
+import { AIAnalysis } from '@/services/ai/types';
 
 interface ScanModalProps {
   onClose: () => void;
@@ -19,12 +20,14 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
   const receiptService = ReceiptService.getInstance('openai');
   const storageService = StorageService.getInstance();
 
-  const processImage = async (imageData: string) => {
+  const processImage = async (imageData: string, analysis?: AIAnalysis) => {
     try {
       setIsProcessing(true);
       setError(null);
       const imageUrl = await storageService.uploadBase64Image(imageData, `receipt-${Date.now()}.jpg`);
-      const analysis = await receiptService.processReceipt(imageData);
+      if (!analysis) {
+        analysis = await receiptService.processReceipt(imageData);
+      }
 
       onScanComplete(analysis, imageUrl);
     } catch (error) {
@@ -51,7 +54,7 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
     }
     
     let brightnessThreshold = 3.5;
-    let analysis = null;
+    let analysis: AIAnalysis | null = null;
     let adjustedImage = null;
 
     while (brightnessThreshold >= 1) {
@@ -71,7 +74,7 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
     }
     
     if (adjustedImage) {
-      await processImage(adjustedImage);
+      await processImage(adjustedImage, analysis);
     } else {
       setError('No se pudo ajustar la imagen');
       await processImage(imageSrc);
