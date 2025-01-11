@@ -73,7 +73,7 @@ export default function ConfirmationModal({ data, onClose }: ConfirmationModalPr
               <select
                 value={selectedName}
                 onChange={(e) => setSelectedName(e.target.value)}
-                className="ml-2 border rounded p-1"
+                className="ml-2 border rounded p-1 pr-10"
               >
                 {data.nombres.map((name: string, index: number) => (
                   <option key={index} value={name}>
