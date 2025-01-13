@@ -12,7 +12,7 @@ interface ConfirmationModalProps {
 export default function ConfirmationModal({ data, onClose }: ConfirmationModalProps) {
   const [transactionType, setTransactionType] = useState<'ingreso' | 'gasto'>('gasto');
   const [error, setError] = useState<string | null>(null);
-  const [selectedName, setSelectedName] = useState<string>('');
+  const [selectedName, setSelectedName] = useState<string>(data.nombres[0]);
 
   const { submitTransaction, loading } = useTransactionForm({
     onSuccess: onClose,
