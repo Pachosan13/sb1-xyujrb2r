@@ -36,7 +36,11 @@ export function useTransactionForm({ onSuccess, onError }: UseTransactionFormPro
     } */
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    if (Object.keys(newErrors).length > 0) {
+      onError?.(Object.values(newErrors).join(', '));
+      return false;
+    }
+    return true;
   };
 
   const submitTransaction = async (data: TransactionFormData) => {

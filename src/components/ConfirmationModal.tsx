@@ -1,7 +1,7 @@
 import { Alert } from './Alert';
 import { useTransactionForm } from '../hooks/useTransactionForm';
 import type { TransactionFormData } from '../types/transaction';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 interface ConfirmationModalProps {
   data: any;
@@ -26,8 +26,6 @@ export default function ConfirmationModal({ data, onClose }: ConfirmationModalPr
   //      y crear una nueva subcategoria con el nombre de la categoria extraida
   // 3. si existe, usar la categoria extraida
 
-  
-
   const handleConfirm = async () => {
     const transaction: TransactionFormData = {
       type: transactionType,
@@ -41,14 +39,6 @@ export default function ConfirmationModal({ data, onClose }: ConfirmationModalPr
 
     await submitTransaction(transaction);
   };
-
-  useEffect(() => {
-    console.log('confirmation data', data);
-  }, [data]);
-
-  useEffect(() => {
-    console.log('selectedName', selectedName);
-  }, [selectedName]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

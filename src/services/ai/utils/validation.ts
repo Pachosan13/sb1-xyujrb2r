@@ -8,7 +8,7 @@ export function validateAnalysis(analysis: any): AIAnalysis {
     monto: typeof analysis.monto === 'number' ? analysis.monto : 0,
     impuestos: typeof analysis.impuestos === 'number' ? analysis.impuestos : 0,
     categoria: analysis.categoria || 'otros',
-    nombres: analysis.nombres || 'Comercio no identificado',
+    nombres: analysis.nombres || [],
     descripcion: analysis.descripcion || '',
     ruc: analysis.ruc || '',
     servicios: analysis.servicios || ''
