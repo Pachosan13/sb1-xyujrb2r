@@ -17,7 +17,7 @@ export default function ScanModal({ onClose, onScanComplete }: ScanModalProps) {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'camera' | 'upload'>('camera');
   
-  const receiptService = ReceiptService.getInstance('openai');
+  const receiptService = ReceiptService.getInstance('gemini');
   const storageService = StorageService.getInstance();
 
   const processImage = async (imageData: string, analysis?: AIAnalysis) => {

@@ -10,8 +10,11 @@ import { Alert } from '../components/Alert';
 import { generatePDFReport, generateExcelReport } from '../utils/reportGenerators';
 import { Transaction } from '@/types/transaction';
 import { CategoryType } from '@/lib/cashai.types';
+import TransactionForm from '../components/TransactionForm';
+import TransactionModalContainer from '@/components/transactions/TransctionModalContainer';
 
 export default function Reports() {
+  const transactionService = TransactionService.getInstance();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [startDate, setStartDate] = useState(
@@ -34,6 +37,8 @@ export default function Reports() {
     },
     transactions: [] as Transaction[],
   });
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     loadReportData();
@@ -43,7 +48,6 @@ export default function Reports() {
     try {
       setLoading(true);
       setError(null);
-      const transactionService = TransactionService.getInstance();
       
       // Get transactions for the selected period
       const transactions = await transactionService.getTransactionsWithOptions();
@@ -93,14 +97,40 @@ export default function Reports() {
     }
   };
 
-  const handleEditTransaction = (id: string) => {
-    // TODO: Implement edit transaction
-    console.log('Edit transaction:', id);
+  const handleEditTransaction = async (id: string) => {
+    try {
+      const transaction = await transactionService.getTransactionById(id);
+      if (!transaction) throw new Error('Transaction not found');
+      setSelectedTransaction(transaction);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error('Error fetching transaction:', error);
+      setError('Error al obtener la transacción');
+    }
   };
 
-  const handleViewTransaction = (id: string) => {
-    // TODO: Implement view transaction
-    console.log('View transaction:', id);
+  const handleViewTransaction = async (id: string) => {
+    try {
+      const transaction = await transactionService.getTransactionById(id);
+      if (!transaction) throw new Error('Transaction not found');
+      setSelectedTransaction(transaction);
+      setIsModalOpen(true);
+    } catch (error) {
+      console.error('Error fetching transaction:', error);
+      setError('Error al obtener la transacción');
+    }
+  };
+
+  const handleSaveTransaction = async (updatedTransaction: Partial<Transaction>) => {
+    if (!selectedTransaction) return;
+    try {
+      await transactionService.updateTransaction(selectedTransaction.id, updatedTransaction);
+      setIsModalOpen(false);
+      // Optionally, refresh the transaction list or update the state
+    } catch (error) {
+      console.error('Error updating transaction:', error);
+      setError('Error al actualizar la transacción');
+    }
   };
 
   if (loading) {
@@ -149,6 +179,22 @@ export default function Reports() {
           onView={handleViewTransaction}
         />
       </main>
+
+      <TransactionModalContainer
+        type={selectedTransaction?.type || 'ingreso'}
+        isEdit={true}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      >
+        {selectedTransaction && (
+          <TransactionForm
+            isEdit={true}
+            initialData={selectedTransaction}
+            type={selectedTransaction.type}
+            onSuccess={() => setIsModalOpen(false)}
+          />
+        )}
+      </TransactionModalContainer>
 
       <Footer />
     </div>

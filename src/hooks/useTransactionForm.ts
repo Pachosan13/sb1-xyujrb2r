@@ -63,8 +63,29 @@ export function useTransactionForm({ onSuccess, onError }: UseTransactionFormPro
     }
   };
 
+  const updateTransaction = async (id: string, updates: Partial<TransactionFormData>) => {
+    if (!validateForm(updates as TransactionFormData)) {
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const transactionService = TransactionService.getInstance();
+      const updatedTransaction = await transactionService.updateTransaction(id, updates);
+      console.log('Transaction updated:', updatedTransaction);
+      onSuccess?.();
+    } catch (error) {
+      console.error('Transaction update error:', error);
+      const message = error instanceof Error ? error.message : 'Error al actualizar la transacción';
+      onError?.(message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     submitTransaction,
+    updateTransaction,
     loading,
     errors
   };

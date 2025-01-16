@@ -64,7 +64,7 @@ export async function addTransaction(data: TransactionFormData): Promise<string>
       subcategory: data.subcategory,
       date: data.date,
       created_at: new Date().toISOString(),
-      businessname: data.businessName,
+      businessName: data.businessName,
     };
 
     const { data: result, error } = await supabase
@@ -79,4 +79,34 @@ export async function addTransaction(data: TransactionFormData): Promise<string>
     console.error('Error adding transaction:', error);
     throw error instanceof Error ? error : new Error('No se pudo guardar la transacción');
   }
+}
+
+export async function updateTransaction(id: string, updates: Partial<Transaction>): Promise<Transaction | null> {
+  const { data, error } = await supabase
+    .from('transactions')
+    .update(updates)
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Error updating transaction:', error);
+    return null;
+  }
+
+  return data;
+}
+
+export async function getTransactionById(id: string): Promise<Transaction | null> {
+  const { data, error } = await supabase
+    .from('transactions')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Error fetching transaction:', error);
+    return null;
+  }
+
+  return data;
 }

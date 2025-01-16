@@ -1,19 +1,21 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormInput } from './forms/FormInput';
 import { FormSelect } from './forms/FormSelect';
 import { useTransactionForm } from '../hooks/useTransactionForm';
 import { BUSINESS_CATEGORIES, INCOME_CATEGORIES } from '../data/businessCategories';
 import type { TransactionFormData } from '../types/transaction';
 import { Alert } from './Alert';
+import { updateTransaction } from '@/services/firebase/transactions';
 
 interface TransactionFormProps {
   type: 'ingreso' | 'gasto';
+  isEdit?: boolean;
   onSuccess?: () => void;
   onError?: (error: string) => void;
-  initialData?: Partial<TransactionFormData>;
+  initialData?: Partial<TransactionFormData> & { id?: string };
 }
 
-export default function TransactionForm({ type, onSuccess, onError, initialData }: TransactionFormProps) {
+export default function TransactionForm({ type, isEdit, onSuccess, onError, initialData }: TransactionFormProps) {
   const [formData, setFormData] = useState<Partial<TransactionFormData>>({
     type,
     amount: initialData?.amount || 0,
@@ -49,11 +51,20 @@ export default function TransactionForm({ type, onSuccess, onError, initialData 
       businessName: formData.businessName || '',
     };
 
-    await submitTransaction(transaction);
+    if (isEdit) {
+      await updateTransaction(initialData?.id || '', transaction);
+    } else {
+      await submitTransaction(transaction);
+    }
   };
 
   const categories = type === 'gasto' ? BUSINESS_CATEGORIES : INCOME_CATEGORIES;
   const selectedCategory = categories.find(cat => cat.id === formData.category);
+
+  useEffect(() => {
+    console.log('isEdit', isEdit);
+    console.log('formData', formData, initialData);
+  }, [isEdit, formData]);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -126,7 +137,7 @@ export default function TransactionForm({ type, onSuccess, onError, initialData 
           ${type === 'ingreso' ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'}
           disabled:opacity-50 disabled:cursor-not-allowed`}
       >
-        {loading ? 'Guardando...' : `Agregar ${type === 'ingreso' ? 'Ingreso' : 'Gasto'}`}
+        {loading ? 'Guardando...' : isEdit ? `Editar ${type === 'ingreso' ? 'Ingreso' : 'Gasto'}` : `Agregar ${type === 'ingreso' ? 'Ingreso' : 'Gasto'}`}
       </button>
     </form>
   );

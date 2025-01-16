@@ -1,4 +1,4 @@
-import { addTransaction, getTransactions } from '../firebase/transactions';
+import { addTransaction, getTransactionById, getTransactions, updateTransaction } from '../firebase/transactions';
 import type { Transaction, TransactionFormData } from '../../types/transaction';
 
 export class TransactionService {
@@ -50,5 +50,13 @@ export class TransactionService {
       gastos: 0,
       categorias: [] as { categoryId: string; monto: number; }[]
     });
+  }
+
+  async getTransactionById(id: string): Promise<Transaction | null> {
+    return getTransactionById(id);
+  }
+
+  async updateTransaction(id: string, updates: Partial<Transaction>): Promise<Transaction | null> {
+    return updateTransaction(id, updates);
   }
 }

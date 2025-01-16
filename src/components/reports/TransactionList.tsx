@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { useCurrency } from '../../contexts/CurrencyContext';
 import { formatCurrency } from '../../utils/formatCurrency';
 import { PencilIcon, EyeIcon } from '@heroicons/react/24/outline';
@@ -19,6 +20,17 @@ interface TransactionListProps {
 
 export default function TransactionList({ transactions, onEdit, onView }: TransactionListProps) {
   const { country } = useCurrency();
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
+
+  const handleView = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    onView(transaction.id);
+  };
+
+  const handleEdit = (transaction: Transaction) => {
+    setSelectedTransaction(transaction);
+    onEdit(transaction.id);
+  };
 
   return (
     <div className="bg-white rounded-lg shadow-sm">
@@ -67,13 +79,13 @@ export default function TransactionList({ transactions, onEdit, onView }: Transa
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <button
-                    onClick={() => onView(transaction.id)}
+                    onClick={() => handleView(transaction)}
                     className="text-emerald-600 hover:text-emerald-900 mr-3"
                   >
                     <EyeIcon className="h-5 w-5" />
                   </button>
                   <button
-                    onClick={() => onEdit(transaction.id)}
+                    onClick={() => handleEdit(transaction)}
                     className="text-blue-600 hover:text-blue-900"
                   >
                     <PencilIcon className="h-5 w-5" />
@@ -84,6 +96,13 @@ export default function TransactionList({ transactions, onEdit, onView }: Transa
           </tbody>
         </table>
       </div>
+      {selectedTransaction && (
+        <div className="p-4">
+          <h4>Transaction Details</h4>
+          <p>{selectedTransaction.description}</p>
+          {/* Add more details as needed */}
+        </div>
+      )}
     </div>
   );
 }
