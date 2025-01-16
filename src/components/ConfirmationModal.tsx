@@ -13,6 +13,8 @@ export default function ConfirmationModal({ data, onClose }: ConfirmationModalPr
   const [transactionType, setTransactionType] = useState<'ingreso' | 'gasto'>('gasto');
   const [error, setError] = useState<string | null>(null);
   const [selectedName, setSelectedName] = useState<string>(data.nombres[0]);
+  const [monto, setMonto] = useState<number>(data.monto);
+  const [descripcion, setDescripcion] = useState<string>(data.descripcion);
 
   const { submitTransaction, loading } = useTransactionForm({
     onSuccess: onClose,
@@ -29,8 +31,8 @@ export default function ConfirmationModal({ data, onClose }: ConfirmationModalPr
   const handleConfirm = async () => {
     const transaction: TransactionFormData = {
       type: transactionType,
-      amount: data.monto,
-      description: data.descripcion,
+      amount: monto,
+      description: descripcion,
       category: data.categoria,
       subcategory: data.subcategoria ?? 'sub',
       date: data.fecha || new Date().toISOString().split('T')[0],
@@ -53,13 +55,13 @@ export default function ConfirmationModal({ data, onClose }: ConfirmationModalPr
         {error && <Alert type="error" message={error} />}
 
         <div className="mb-4">
-        {data.nombres.length > 1 ? (
-            <div>
-              <label><strong>Nombre:</strong></label>
+          <div className="flex items-center mb-3">
+            <label className="w-1/4"><strong>Nombre:</strong></label>
+            {data.nombres.length > 1 ? (
               <select
                 value={selectedName}
                 onChange={(e) => setSelectedName(e.target.value)}
-                className="ml-2 border rounded p-1 pr-10"
+                className="ml-2 border rounded p-1 flex-grow"
               >
                 {data.nombres.map((name: string, index: number) => (
                   <option key={index} value={name}>
@@ -67,57 +69,85 @@ export default function ConfirmationModal({ data, onClose }: ConfirmationModalPr
                   </option>
                 ))}
               </select>
-            </div>
-          ) : data.nombres.length === 1 ? (
-            <p><strong>Nombre:</strong> {data.nombres[0]}</p>
-          ) : (
-            <div>
-              <label><strong>Nombre:</strong></label>
+            ) : data.nombres.length === 1 ? (
+              <p className="ml-2 flex-grow">{data.nombres[0]}</p>
+            ) : (
               <input
                 type="text"
                 value={selectedName || ''}
                 onChange={(e) => setSelectedName(e.target.value)}
-                className="ml-2 border rounded p-1"
+                className="ml-2 border rounded p-1 flex-grow"
                 placeholder="Ingrese nombre"
               />
+            )}
+          </div>
+          <div className="flex items-center mb-3">
+            <label className="w-1/4"><strong>Monto:</strong></label>
+            <input
+              type="number"
+              value={monto}
+              onChange={(e) => setMonto(Number(e.target.value))}
+              className="ml-2 border rounded p-1 flex-grow"
+            />
+          </div>
+          <div className="flex items-center mb-3">
+            <label className="w-1/4"><strong>Descripción:</strong></label>
+            <textarea
+              value={descripcion}
+              onChange={(e) => setDescripcion(e.target.value)}
+              className="ml-2 border rounded p-1 flex-grow"
+              rows={2}
+            />
+          </div>
+          <div className="flex items-center mb-3">
+            <p className="w-1/4"><strong>Categoría:</strong></p>
+            <p className="ml-2 flex-grow">{data.categoria}</p>
+          </div>
+          <div className="flex items-center mb-3">
+            <p className="w-1/4"><strong>Fecha:</strong></p>
+            <p className="ml-2 flex-grow">{new Date(data.fecha).toLocaleDateString()}</p>
+          </div>
+          <div className="flex items-center mb-3">
+            <label className="w-1/4"><strong>Tipo:</strong></label>
+            <div className="ml-2 flex-grow flex">
+              <label className="mr-4">
+                <input
+                  className="mr-2"
+                  type="radio"
+                  value="gasto"
+                  checked={transactionType === 'gasto'}
+                  onChange={() => setTransactionType('gasto')}
+                />
+                Gasto
+              </label>
+              <label>
+                <input
+                  className="mr-2"
+                  type="radio"
+                  value="ingreso"
+                  checked={transactionType === 'ingreso'}
+                  onChange={() => setTransactionType('ingreso')}
+                />
+                Ingreso
+              </label>
             </div>
-          )}
-          <p><strong>Monto:</strong> ${data.monto.toLocaleString()}</p>
-          <p><strong>Descripción:</strong> {data.descripcion}</p>
-          <p><strong>Categoría:</strong> {data.categoria}</p>
-          <p><strong>Fecha:</strong> {new Date(data.fecha).toLocaleDateString()}</p>
+          </div>
+          <div className="flex justify-end space-x-2">
+            <button
+              onClick={onClose}
+              className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={handleConfirm}
+              disabled={loading}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Guardando...' : 'Confirmar'}
+            </button>
+          </div>
         </div>
-
-        <div className="mb-4">
-          <label>
-            <input
-              className="mr-2"
-              type="radio"
-              value="gasto"
-              checked={transactionType === 'gasto'}
-              onChange={() => setTransactionType('gasto')}
-            />
-            Gasto
-          </label>
-          <label className="ml-4">
-            <input
-              className="mr-2"
-              type="radio"
-              value="ingreso"
-              checked={transactionType === 'ingreso'}
-              onChange={() => setTransactionType('ingreso')}
-            />
-            Ingreso
-          </label>
-        </div>
-
-        <button
-          onClick={handleConfirm}
-          disabled={loading}
-          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {loading ? 'Guardando...' : 'Confirmar'}
-        </button>
       </div>
     </div>
   );
